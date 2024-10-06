@@ -23,6 +23,16 @@ files = [
 ]
 
 [[package]]
+name = "logging"
+version = "0.4.9.6"
+description = "A logging module for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "logging-0.4.9.6.tar.gz", hash = "sha256:26f6b50773f085042d301085bd1bf5d9f3735704db9f37c1ce6d8b85c38f2417"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 description = "Core utilities for Python packages"
@@ -49,16 +59,6 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "pycopy-shutil"
-version = "0.1"
-description = "shutil module for Pycopy"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pycopy-shutil-0.1.tar.gz", hash = "sha256:b2b515967638a58b45c4da29231cdd47fbcb6524e1ac6a6af9f3105ba6d90026"},
-]
-
-[[package]]
 name = "pytest"
 version = "8.3.3"
 description = "pytest: simple powerful testing with Python"
@@ -81,4 +81,4 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7971fdcd4d7fe0ca90db5d9e10aeb70694f707fefa5d482939b349d03156bdf7"
+content-hash = "abd43a4194a2e6f14ca81f613952818e7cd85b930148ca62f78c25366168d241"

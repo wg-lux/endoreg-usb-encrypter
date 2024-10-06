@@ -1,0 +1,23 @@
+{
+    "device": "/dev/sdb",
+    "partitions": [
+        {
+            "partition": "/dev/sdb1",
+            "uuid": "df4063df-ee90-4d97-b840-d253272c9ab5",
+            "luks_uuid": "4d7c0f52-bebd-450d-b4c3-9121ee0d7525",
+            "encryption_key": "./key-sdb1.key"
+        },
+        {
+            "partition": "/dev/sdb2",
+            "uuid": "5b475191-ed78-40f7-9890-b57bdbcb011b",
+            "luks_uuid": "a80fa396-1893-4bb1-b908-beb85bbc744f",
+            "encryption_key": "./key-sdb2.key"
+        },
+        {
+            "partition": "/dev/sdb3",
+            "uuid": "04d4dab9-255a-4e02-aae4-aa2a8c91c0f2",
+            "luks_uuid": "e6db22ad-ccda-4a0d-b947-99a6e67ee568",
+            "encryption_key": "./key-sdb3.key"
+        }
+    ]
+}

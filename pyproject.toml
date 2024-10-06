@@ -8,10 +8,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pycopy-shutil = "^0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
+
+# [tool.poetry.group.nixProvisioned.dependencies]
+
+[tool.poetry.scripts]
+encrypt-usb = "endoreg_usb_encrypter.main:main"
 
 [build-system]
 requires = ["poetry-core"]
