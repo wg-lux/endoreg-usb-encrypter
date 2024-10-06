@@ -125,9 +125,25 @@
         pkgs.lsof
 
       ];
-
       venvDir = ".venv";
+    };
+
+    nixosModules = {
+      encrypter = { config, pkgs, lib, ...}: 
+        let
+          mkOption = lib.mkOption;
+        in
+      {
+        config = {
+          environment.systemPackages = [
+            poetryApp
+          ];
+        };
+      };
 
     };
+
   };
+
+
 }
