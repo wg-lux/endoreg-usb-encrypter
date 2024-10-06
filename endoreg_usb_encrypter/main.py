@@ -277,7 +277,14 @@ def main(
     logger.info(f"Permissions set for {mount_dir}: user=agl-admin, group=service-user")
 
     # Get the key directory from the user
-    key_dir = input("Enter a directory to store encryption keys (default: /home/agl-admin/Desktop/sensitive-hdd-keys): ").strip()
+    _key_dir = input("Enter a directory to store encryption keys (default: /home/agl-admin/Desktop/sensitive-hdd-keys): ").strip()
+    if not _key_dir:
+        key_dir = default_key_dir
+
+    else:
+        key_dir = _key_dir
+
+    logger.info(f"Key directory: {key_dir}")
 
     # check if key directory exists
     if not os.path.exists(key_dir):
