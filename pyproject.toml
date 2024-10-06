@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "endoreg-usb-encrypter"
+version = "0.1.0"
+description = "Web Application to set up usb devices as sensitive data storage units"
+authors = ["Thomas J. Lux"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pycopy-shutil = "^0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
