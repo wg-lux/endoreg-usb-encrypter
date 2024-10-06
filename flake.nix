@@ -134,11 +134,60 @@
           mkOption = lib.mkOption;
         in
       {
-        config = {
-          environment.systemPackages = [
-            poetryApp
-          ];
+        
+        options.services.usb-encrypter = {
+
+          enable = mkOption {
+            default = false;
+            description = "Enable the USB encrypter service";
+            type = lib.types.bool;
+          };
+
+          user = mkOption {
+            default = "root";
+            description = "The user to run the USB encrypter service as";
+            type = lib.types.str;
+          };
+
+          group = mkOption {
+            default = "root";
+            description = "The group to run the USB encrypter service as";
+            type = lib.types.str;
+          };
+
+          partition-size-factors = mkOption {
+            default = [ 0.33 0.33 0.33 ];
+            description = "Factors of total partition size for the three partitions";
+            type = lib.types.list lib.types.float;
+          };
+
+          output-json-file = mkOption {
+            default = "/etc/usb-encrypter.json";
+            description = "The file to output the USB encrypter configuration to";
+            type = lib.types.str;
+          };
+
+          logfile = mkOption {
+            default = "/var/log/usb-encrypter.log";
+            description = "The file to output the USB encrypter logs to";
+            type = lib.types.str;
+          };
+
+          hdd-info-file = mkOption {
+            default = "/etc/usb-encrypter-hdd-info.json";
+            description = "The file to output the USB encrypter HDD information to";
+            type = lib.types.str;
+          };
+
+          mountpoint = mkOption {
+            default = "/mnt/sensitive-data-hdd";
+            description = "The mountpoint for the encrypted USB";
+            type = lib.types.str;
+          };
+
         };
+
+
       };
 
     };

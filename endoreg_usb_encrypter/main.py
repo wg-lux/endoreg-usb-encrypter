@@ -125,11 +125,11 @@ def format_partition(partition, logger):
     return partition_uuid
 
 # Function to encrypt partition with LUKS
-def encrypt_partition(partition, logger, mount_dir):
-    logger.info(f"Encrypting partition {partition} with LUKS")
+def encrypt_partition(partition, logger, mount_dir, key_dir):
+    logger.info(f"Encrypting partition {partition} with LUKS")    
 
     # Generate a unique key file name for each partition
-    key_file = f"./key-{os.path.basename(partition)}.key"
+    key_file = f"{key_dir}/key-{os.path.basename(partition)}.key"
     with open(key_file, "wb") as keyf:
         key = secrets.token_bytes(32)  # 32 bytes = 256-bit key
         keyf.write(key)
@@ -227,7 +227,15 @@ def test_unmount_and_mount_all_partitions(device, mount_dir, logger):
     logger.info("Test completed: all partitions unmounted and remounted successfully.")
 
 # Main function
-def main(default_factors=[0.33, 0.33, 0.33], output_json="output.json", log_file="usb_encryption.log", hdd_info_json="hdd-info.json", default_mount_dir="/home/agl-admin/Desktop/sensitive-hdd-mount"):
+def main(
+        default_factors=[0.33, 0.33, 0.33],
+        output_json="output.json",
+        log_file="usb_encryption.log",
+        hdd_info_json="hdd-info.json",
+        default_mount_dir="/home/agl-admin/Desktop/sensitive-hdd-mount",
+        default_key_dir="/home/agl-admin/Desktop/sensitive-hdd-keys"
+    ):
+
     # Set up logging
     logger = setup_logging(log_file)
 
@@ -268,6 +276,21 @@ def main(default_factors=[0.33, 0.33, 0.33], output_json="output.json", log_file
     os.chmod(mount_dir, 0o770)
     logger.info(f"Permissions set for {mount_dir}: user=agl-admin, group=service-user")
 
+    # Get the key directory from the user
+    key_dir = input("Enter a directory to store encryption keys (default: /home/agl-admin/Desktop/sensitive-hdd-keys): ").strip()
+
+    # check if key directory exists
+    if not os.path.exists(key_dir):
+        logger.info(f"Creating key directory: {key_dir}")
+        os.makedirs(key_dir)
+        logger.info(f"Key directory created: {key_dir}")
+
+        logger.info(f"Setting permissions for key directory: {key_dir}")
+        shutil.chown(key_dir, user="agl-admin", group="service-user")
+
+        os.chmod(key_dir, 0o770)
+        logger.info(f"Permissions (0770) set for {key_dir}: user=agl-admin, group=service-user")
+
     # Confirm with the user before proceeding
     confirm = input(f"Are you sure you want to format and partition {device}? This will destroy all data on the device. (yes/no): ").strip().lower()
     if confirm != 'yes':
@@ -295,7 +318,7 @@ def main(default_factors=[0.33, 0.33, 0.33], output_json="output.json", log_file
     # Step 3: Format partitions with ext4 and encrypt them with LUKS
     for partition in partitions:
         partition_uuid = format_partition(partition, logger)
-        luks_uuid, key_file = encrypt_partition(partition, logger, mount_dir)
+        luks_uuid, key_file = encrypt_partition(partition, logger, mount_dir, key_dir)
         key_files.append(key_file)
         result["partitions"].append({"partition": partition, "uuid": partition_uuid})
         hdd_info["partitions"].append({
@@ -326,6 +349,7 @@ if __name__ == "__main__":
     parser.add_argument("--logfile", default="usb_encryption.log", help="Log file location")
     parser.add_argument("--hddinfo", default="hdd-info.json", help="HDD info JSON file location")
     parser.add_argument("--mountdir", default="/home/agl-admin/Desktop/sensitive-hdd-mount", help="Target directory for mounting LUKS partitions")
+    parser.add_argument("--keydir", default="/home/agl-admin/Desktop/sensitive-hdd-keys", help="Directory to store encryption keys")
     args = parser.parse_args()
     
     main(args.factors, args.output, args.logfile, args.hddinfo, args.mountdir)
