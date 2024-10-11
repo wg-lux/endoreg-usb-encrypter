@@ -192,6 +192,12 @@
         config = lib.mkIf config.services.usb-encrypter.enable {
           environment.systemPackages = [ 
             poetryApp
+            
+            pkgs.parted
+            pkgs.parted
+            pkgs.cryptsetup
+            pkgs.openssl
+            pkgs.lsof
           ];
         };
 
