@@ -191,7 +191,7 @@
         # if usb-encrypter service is enabled, add the poetryApp to the systemPackages
         config = lib.mkIf config.services.usb-encrypter.enable {
           environment.systemPackages = [ 
-            pkgs.poetryApp
+            poetryApp
           ];
         };
 
