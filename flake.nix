@@ -139,7 +139,7 @@
         options.services.usb-encrypter = {
 
           enable = mkOption {
-            default = false;
+            default = true;
             description = "Enable the USB encrypter service";
             type = lib.types.bool;
           };
@@ -186,6 +186,13 @@
             type = lib.types.str;
           };
 
+        };
+
+        # if usb-encrypter service is enabled, add the poetryApp to the systemPackages
+        config = lib.mkIf config.services.usb-encrypter.enable {
+          environment.systemPackages = [ 
+            pkgs.poetryApp
+          ];
         };
 
 
