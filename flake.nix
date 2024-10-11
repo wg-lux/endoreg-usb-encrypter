@@ -82,6 +82,10 @@
       buildInputs = with pkgs; [
         poetry
         python311Packages.venvShellHook
+        parted
+        cryptsetup
+        openssl
+        lsof
       ];
 
       venvDir = ".venv";
@@ -94,8 +98,7 @@
         ps.pip
       ]);
       overrides = p2n-overrides;
-      editablePackageSources = {
-     };
+      editablePackageSources = {};
       preferWheels = true;
     };
     
@@ -115,7 +118,6 @@
     devShells.x86_64-linux.default = pkgs.mkShell {
       buildInputs = [
         pkgs.poetry
-
         poetryEnv
         pkgs.python311Packages.numpy
         pkgs.python311Packages.venvShellHook
@@ -123,7 +125,6 @@
         pkgs.cryptsetup
         pkgs.openssl
         pkgs.lsof
-
       ];
       venvDir = ".venv";
     };

@@ -2,15 +2,15 @@
     "partitions": [
         {
             "partition": "/dev/sda1",
-            "uuid": "b2a63cbf-94dc-40d6-9ccd-33a66183f27a"
+            "uuid": "9569e8d7-83b9-484e-baa7-a0d4262529e9"
         },
         {
             "partition": "/dev/sda2",
-            "uuid": "fdc20e2e-4bfd-4998-8af2-058f493cb8e9"
+            "uuid": "466f47bf-c4f4-49d9-b765-8edaeb636b22"
         },
         {
             "partition": "/dev/sda3",
-            "uuid": "f55ffbe7-e750-4649-926a-ec9a5cdaa7b1"
+            "uuid": "eb6c6917-7b46-4a82-90d4-1e5cb60a0fdd"
         }
     ]
 }

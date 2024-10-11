@@ -3,20 +3,20 @@
     "partitions": [
         {
             "partition": "/dev/sda1",
-            "uuid": "b2a63cbf-94dc-40d6-9ccd-33a66183f27a",
-            "luks_uuid": "91097d4d-58a1-4a18-91a4-08f7196037d1",
+            "uuid": "9569e8d7-83b9-484e-baa7-a0d4262529e9",
+            "luks_uuid": "9f391d01-0910-40e2-80b8-455b02751246",
             "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda1.key"
         },
         {
             "partition": "/dev/sda2",
-            "uuid": "fdc20e2e-4bfd-4998-8af2-058f493cb8e9",
-            "luks_uuid": "3a856cad-4c44-43f7-a9a3-0f80bf5040db",
+            "uuid": "466f47bf-c4f4-49d9-b765-8edaeb636b22",
+            "luks_uuid": "4772d616-1b18-4a51-959d-7ec8f39dc546",
             "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda2.key"
         },
         {
             "partition": "/dev/sda3",
-            "uuid": "f55ffbe7-e750-4649-926a-ec9a5cdaa7b1",
-            "luks_uuid": "5bce0aad-5f4b-457e-b12e-bcfac3199061",
+            "uuid": "eb6c6917-7b46-4a82-90d4-1e5cb60a0fdd",
+            "luks_uuid": "63ce3031-34d3-43aa-9d81-06c5950042d5",
             "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda3.key"
         }
     ]
