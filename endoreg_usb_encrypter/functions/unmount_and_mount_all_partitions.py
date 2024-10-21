@@ -8,7 +8,7 @@ from .decrypt_and_mount_partition import decrypt_and_mount_partition
 def unmount_and_mount_all_partitions(
         device, mount_dir, 
         logger,
-        key_dir="/home/agl-admin/Desktop/sensitive-hdd-keys"
+        key_dir
     ):
     logger.info("Testing unmount and remount of all partitions")
 
