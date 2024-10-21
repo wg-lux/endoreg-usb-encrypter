@@ -86,6 +86,7 @@
         cryptsetup
         openssl
         lsof
+        e2fsprogs
       ];
 
       venvDir = ".venv";

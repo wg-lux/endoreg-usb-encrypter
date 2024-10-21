@@ -14,34 +14,29 @@ from .functions import (
 
 
 # Function to write the Nix configuration file
-def write_nix_configuration(hdd_info, nix_file="sensitive-hdd.nix"):
+def write_nix_configuration(hdd_info, partition_names, nix_file="sensitive-hdd.nix"):
     nix_content = []
     
-    nix_content.append("{ config, lib, pkgs, ... }:\n")
-    nix_content.append("{\n")
-    nix_content.append("  fileSystems = lib.mkForce {\n")
+    nix_content.append("{ ... }:\n")
+    nix_content.append("let\n")
+    nix_content.append("  sensitive-hdd = {\n")
     
-    for partition in hdd_info["partitions"]:
-        nix_content.append(f"    # Partition {partition['partition']}\n")
-        nix_content.append(f"    \"{partition['uuid']}\" = {{\n")
-        nix_content.append(f"      device = \"/dev/disk/by-uuid/{partition['luks_uuid']}\";\n")
-        nix_content.append(f"      fsType = \"ext4\";\n")
-        nix_content.append(f"      options = [ \"defaults\" ];\n")
-        nix_content.append(f"      neededForBoot = false;\n")
-        nix_content.append(f"      mountPoint = \"/mnt/{os.path.basename(partition['partition'])}\";\n")
-        nix_content.append("    };\n")
-
-    nix_content.append("  };\n")
-
-    nix_content.append("  boot.initrd.luks.devices = {\n")
-    for partition in hdd_info["partitions"]:
-        nix_content.append(f"    {os.path.basename(partition['partition'])} = {{\n")
+    for i, partition in enumerate(hdd_info["partitions"]):
+        p_name = partition_names[i]
+        nix_content.append(f"    # Partition {p_name}\n")
+        nix_content.append(f"    \"{p_name}\" = {{\n")
+        nix_content.append(f"      label = \"{p_name}\";\n")
         nix_content.append(f"      device = \"/dev/disk/by-uuid/{partition['uuid']}\";\n")
-        nix_content.append(f"      keyFile = \"{partition['encryption_key']}\";\n")
+        nix_content.append(f"      device-by-label = \"/dev/disk/by-label/{p_name}\";\n")
+        nix_content.append(f"      mountPoint = \"/mnt/sensitive-hdd-mount/{p_name}\";\n")
+        nix_content.append(f"      uuid = \"{partition['uuid']}\";\n")
+        nix_content.append(f"      luks-uuid = \"{partition['luks_uuid']}\";\n")
+        nix_content.append(f"      luks-device = \"/dev/disk/by-uuid/{partition['luks_uuid']}\";\n")
+        nix_content.append(f"      fsType = \"ext4\";\n")
         nix_content.append("    };\n")
-    nix_content.append("  };\n")
 
-    nix_content.append("}\n")
+    nix_content.append("  };\n")
+    nix_content.append("in sensitive-hdd")
 
     # Write to file
     with open(nix_file, "w") as nix_file_obj:
@@ -69,9 +64,9 @@ def main(
     device = input("Please enter the full path of the device you wish to format (e.g., /dev/sdb): ").strip()
 
     # Get partition names from the user, with default values
-    partition_names = input("Enter partition names separated by commas (default: dropoff,pseudo,processed): ").strip().split(",")
+    partition_names = input("Enter partition names separated by commas (default: dropoff,processing,processed): ").strip().split(",")
     if len(partition_names) != 3:
-        partition_names = ['dropoff', 'pseudo', 'processed']
+        partition_names = ['dropoff', 'processing', 'processed']
     else:
         partition_names = [name.strip() for name in partition_names]
 
@@ -117,9 +112,9 @@ def main(
         logger.info(f"Key directory created: {key_dir}")
 
         logger.info(f"Setting permissions for key directory: {key_dir}")
-        shutil.chown(key_dir, user="agl-admin", group="service-user")
+        shutil.chown(key_dir, user="service-user", group="service")
         os.chmod(key_dir, 0o770)
-        logger.info(f"Permissions (0770) set for {key_dir}: user=agl-admin, group=service-user")
+        logger.info(f"Permissions (0770) set for {key_dir}: user=service-user, group=service")
 
     # Confirm with the user before proceeding
     confirm = input(f"Are you sure you want to format and partition {device}? This will destroy all data on the device. (yes/no): ").strip().lower()
@@ -131,7 +126,8 @@ def main(
     cleanup_device(device, mount_dir, logger)
 
     # Step 2: Create partitions
-    partitions = create_partitions(device, partition_names, size_factors, logger)
+    ov_partition_names = ['dropoff', 'processing', 'processed']
+    partitions = create_partitions(device, ov_partition_names, size_factors, logger)
 
     # Initialize storage for results
     result = {
@@ -169,7 +165,7 @@ def main(
     logger.info(f"HDD Info written to {hdd_info_json}")
 
     # Step 6: Write Nix configuration file
-    write_nix_configuration(hdd_info, nix_output_file)
+    write_nix_configuration(hdd_info, partition_names, nix_output_file)
 
     # Step 7: Test unmount and remount functionality
     unmount_and_mount_all_partitions(device, mount_dir, logger, key_dir)
@@ -183,8 +179,8 @@ if __name__ == "__main__":
     parser.add_argument("--logfile", default="usb_encryption.log", help="Log file location")
     parser.add_argument("--hddinfo", default="hdd-info.json", help="HDD info JSON file location")
     parser.add_argument("--nixfile", default="sensitive-hdd.nix", help="Output Nix file location")  # Added Nix file option
-    parser.add_argument("--mountdir", default="/home/agl-admin/Desktop/sensitive-hdd-mount", help="Target directory for mounting LUKS partitions")
-    parser.add_argument("--keydir", default="/home/agl-admin/Desktop/sensitive-hdd-keys", help="Directory to store encryption keys")
+    parser.add_argument("--mountdir", default="/mnt/endoreg-sensitive", help="Target directory for mounting LUKS partitions")
+    parser.add_argument("--keydir", default="./sensitive-hdd-keys/", help="Directory to store encryption keys")
     args = parser.parse_args()
     
     main(args.factors, args.output, args.logfile, args.hddinfo, args.nixfile, args.mountdir)
