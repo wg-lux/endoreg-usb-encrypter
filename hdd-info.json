@@ -1,23 +1,23 @@
 {
-    "device": "/dev/sda",
+    "device": "/dev/sdb",
     "partitions": [
         {
-            "partition": "/dev/sda1",
-            "uuid": "9569e8d7-83b9-484e-baa7-a0d4262529e9",
-            "luks_uuid": "9f391d01-0910-40e2-80b8-455b02751246",
-            "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda1.key"
+            "partition": "/dev/sdb1",
+            "uuid": "8c9595b2-073d-4746-8bee-682779bfb031",
+            "luks_uuid": "90964f31-1495-4f4b-99be-f5f77e46e32b",
+            "encryption_key": "./sensitive-hdd-keys/key-sdb1.key"
         },
         {
-            "partition": "/dev/sda2",
-            "uuid": "466f47bf-c4f4-49d9-b765-8edaeb636b22",
-            "luks_uuid": "4772d616-1b18-4a51-959d-7ec8f39dc546",
-            "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda2.key"
+            "partition": "/dev/sdb2",
+            "uuid": "764904e7-3bfb-45e9-9e58-757d71fbdded",
+            "luks_uuid": "ba7727a0-4aeb-472b-a36b-ac6e409f1cb3",
+            "encryption_key": "./sensitive-hdd-keys/key-sdb2.key"
         },
         {
-            "partition": "/dev/sda3",
-            "uuid": "eb6c6917-7b46-4a82-90d4-1e5cb60a0fdd",
-            "luks_uuid": "63ce3031-34d3-43aa-9d81-06c5950042d5",
-            "encryption_key": "/home/agl-admin/Desktop/sensitive-hdd-keys/key-sda3.key"
+            "partition": "/dev/sdb3",
+            "uuid": "0bd0d1e1-ff17-4a08-b496-22f2756e66b6",
+            "luks_uuid": "3b94407e-6795-4d3f-a6b3-f3eaa3f61949",
+            "encryption_key": "./sensitive-hdd-keys/key-sdb3.key"
         }
     ]
 }
