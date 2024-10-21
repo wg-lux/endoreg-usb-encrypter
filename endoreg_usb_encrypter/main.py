@@ -13,12 +13,50 @@ from .functions import (
 )
 
 
+# Function to write the Nix configuration file
+def write_nix_configuration(hdd_info, nix_file="sensitive-hdd.nix"):
+    nix_content = []
+    
+    nix_content.append("{ config, lib, pkgs, ... }:\n")
+    nix_content.append("{\n")
+    nix_content.append("  fileSystems = lib.mkForce {\n")
+    
+    for partition in hdd_info["partitions"]:
+        nix_content.append(f"    # Partition {partition['partition']}\n")
+        nix_content.append(f"    \"{partition['uuid']}\" = {{\n")
+        nix_content.append(f"      device = \"/dev/disk/by-uuid/{partition['luks_uuid']}\";\n")
+        nix_content.append(f"      fsType = \"ext4\";\n")
+        nix_content.append(f"      options = [ \"defaults\" ];\n")
+        nix_content.append(f"      neededForBoot = false;\n")
+        nix_content.append(f"      mountPoint = \"/mnt/{os.path.basename(partition['partition'])}\";\n")
+        nix_content.append("    };\n")
+
+    nix_content.append("  };\n")
+
+    nix_content.append("  boot.initrd.luks.devices = {\n")
+    for partition in hdd_info["partitions"]:
+        nix_content.append(f"    {os.path.basename(partition['partition'])} = {{\n")
+        nix_content.append(f"      device = \"/dev/disk/by-uuid/{partition['uuid']}\";\n")
+        nix_content.append(f"      keyFile = \"{partition['encryption_key']}\";\n")
+        nix_content.append("    };\n")
+    nix_content.append("  };\n")
+
+    nix_content.append("}\n")
+
+    # Write to file
+    with open(nix_file, "w") as nix_file_obj:
+        nix_file_obj.write("".join(nix_content))
+
+    print(f"Nix configuration file written to {nix_file}")
+
+
 # Main function
 def main(
         default_factors=[0.33, 0.33, 0.33],
         output_json="output.json",
         log_file="prod_usb_encryption.log",
         hdd_info_json="hdd-info.json",
+        nix_output_file="sensitive-hdd.nix",   # New argument for Nix file
         default_mount_dir="/mnt/sensitive-hdd-mount",
         default_key_dir="./sensitive-hdd-keys"
     ):
@@ -67,7 +105,6 @@ def main(
     _key_dir = input(f"Enter a directory to store encryption keys (default: {default_key_dir}): ").strip()
     if not _key_dir:
         key_dir = default_key_dir
-
     else:
         key_dir = _key_dir
 
@@ -81,7 +118,6 @@ def main(
 
         logger.info(f"Setting permissions for key directory: {key_dir}")
         shutil.chown(key_dir, user="agl-admin", group="service-user")
-
         os.chmod(key_dir, 0o770)
         logger.info(f"Permissions (0770) set for {key_dir}: user=agl-admin, group=service-user")
 
@@ -132,8 +168,12 @@ def main(
         json.dump(hdd_info, hdd_json_file, indent=4)
     logger.info(f"HDD Info written to {hdd_info_json}")
 
-    # Step 6: Test unmount and remount functionality
+    # Step 6: Write Nix configuration file
+    write_nix_configuration(hdd_info, nix_output_file)
+
+    # Step 7: Test unmount and remount functionality
     unmount_and_mount_all_partitions(device, mount_dir, logger, key_dir)
+
 
 if __name__ == "__main__":
     import argparse
@@ -142,8 +182,10 @@ if __name__ == "__main__":
     parser.add_argument("--output", default="output.json", help="Output JSON file")
     parser.add_argument("--logfile", default="usb_encryption.log", help="Log file location")
     parser.add_argument("--hddinfo", default="hdd-info.json", help="HDD info JSON file location")
+    parser.add_argument("--nixfile", default="sensitive-hdd.nix", help="Output Nix file location")  # Added Nix file option
     parser.add_argument("--mountdir", default="/home/agl-admin/Desktop/sensitive-hdd-mount", help="Target directory for mounting LUKS partitions")
     parser.add_argument("--keydir", default="/home/agl-admin/Desktop/sensitive-hdd-keys", help="Directory to store encryption keys")
     args = parser.parse_args()
     
-    main(args.factors, args.output, args.logfile, args.hddinfo, args.mountdir)
+    main(args.factors, args.output, args.logfile, args.hddinfo, args.nixfile, args.mountdir)
+
