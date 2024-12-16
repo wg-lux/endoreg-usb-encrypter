@@ -1,23 +1,19 @@
-[tool.poetry]
+[project]
 name = "endoreg-usb-encrypter"
 version = "0.1.0"
-description = "Web Application to set up usb devices as sensitive data storage units"
+description = "Application to set up usb devices as sensitive data storage units"
 authors = ["Thomas J. Lux"]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cryptography>=44.0.0",
+    "opencv-python>=4.10.0.84",
+    "paramiko>=3.5.0",
+    "passlib>=1.7.4",
+    "pyyaml>=6.0.2",
+    "xkcdpass>=1.19.9",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-pytest-mock = "^3.14.0"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
-
-# [tool.poetry.group.nixProvisioned.dependencies]
-
-[tool.poetry.scripts]
-encrypt-usb = "endoreg_usb_encrypter.main:main"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+packages = ["endoreg_usb_encrypter"]
