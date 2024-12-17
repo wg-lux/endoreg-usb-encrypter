@@ -1,6 +1,10 @@
 .devenv/
 .direnv/
 .devenv.flake.nix
+sensitive-hdd-keys/
+hdd-info.json
+output.json
+sensitive-hdd.nix
 
 *.key
 */key*

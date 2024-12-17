@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-from .functions import (
+from functions import (
     cleanup_device,
     create_partitions,
     encrypt_partition,
@@ -53,7 +53,9 @@ def main(
         hdd_info_json="hdd-info.json",
         nix_output_file="sensitive-hdd.nix",   # New argument for Nix file
         default_mount_dir="/mnt/sensitive-hdd-mount",
-        default_key_dir="./sensitive-hdd-keys"
+        default_key_dir="./sensitive-hdd-keys",
+        user = "endoreg-service-user",
+        group = "endoreg-service"
     ):
 
     # Set up logging
@@ -92,9 +94,9 @@ def main(
 
     # Check / set directory permissions
     logger.info(f"Setting permissions for mount directory: {mount_dir}")
-    shutil.chown(mount_dir, user="service-user", group="service")
+    shutil.chown(mount_dir, user="{user}", group="endoreg-service")
     os.chmod(mount_dir, 0o770)
-    logger.info(f"Permissions set for {mount_dir}: user=service-user, group=service")
+    logger.info(f"Permissions set for {mount_dir}: user={user}, group=endoreg-service")
 
     # Get the key directory from the user
     _key_dir = input(f"Enter a directory to store encryption keys (default: {default_key_dir}): ").strip()
@@ -112,9 +114,9 @@ def main(
         logger.info(f"Key directory created: {key_dir}")
 
         logger.info(f"Setting permissions for key directory: {key_dir}")
-        shutil.chown(key_dir, user="service-user", group="service")
+        shutil.chown(key_dir, user="{user}", group="endoreg-service")
         os.chmod(key_dir, 0o770)
-        logger.info(f"Permissions (0770) set for {key_dir}: user=service-user, group=service")
+        logger.info(f"Permissions (0770) set for {key_dir}: user={user}, group=endoreg-service")
 
     # Confirm with the user before proceeding
     confirm = input(f"Are you sure you want to format and partition {device}? This will destroy all data on the device. (yes/no): ").strip().lower()

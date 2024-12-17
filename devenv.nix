@@ -18,11 +18,11 @@ in
 
 
   packages = with pkgs; [
-    cudaPackages.cuda_nvcc
     stdenv.cc.cc
-    age
-    openvpn
-    openssh
+    parted
+    cryptsetup
+    lsof
+    e2fsprogs
   ];
   
 

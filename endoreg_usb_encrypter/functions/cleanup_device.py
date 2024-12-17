@@ -26,6 +26,8 @@ def cleanup_device(device, mount_dir, logger):
         else:
             for line in luks_devices.splitlines():
                 luks_device = line.split()[0]
+                if luks_device == "crypt" or luks_device=="cryptroot":
+                    continue
                 luks_path = f"/dev/mapper/{luks_device}"
 
                 # Check if the LUKS device is mounted
